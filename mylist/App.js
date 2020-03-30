@@ -6,7 +6,7 @@ import shouye from './src/component/shouye';
 import Fenlei from './src/component/list'
 import Myself from './src/component/Myself';
 import Mycommit from './src/component/Mycommit';
-import paizhao from './src/component/paizhao';
+
 import SplashScreen from 'react-native-splash-screen';
 import SwiperPage from './src/swiper/SwiperPage';
 import login from './src/login/Login';
@@ -22,7 +22,6 @@ const App = () => {
   //是否点击了开始体验设置初值
   let [isInstall, setInstall] = useState(true);
   useEffect(() => {
-
     //看看是否本地有存储的已经点击过开始体验软件
     AsyncStorage.getItem('isInstall')
       .then(res => {
@@ -35,10 +34,11 @@ const App = () => {
     AsyncStorage.getItem('user')
       .then(res => {
         let user = JSON.parse(res)
+        console.log(user)
         if (!user) {
           SplashScreen.hide()
         }
-        if (user && user.token) {
+        if (user) {
           setLogin(true)
           SplashScreen.hide();
         }
@@ -54,23 +54,13 @@ const App = () => {
     </View>
   }
   return (
-
-
-
     <Router
     backAndroidHandler={()=>{
-      console.log(Actions.currentScene)
-      if(Actions.currentScene == 'shoye'){
-        if(new Date().getTime()-now<2000){
-          BackHandler.exitApp();
-        }else{
-          ToastAndroid.show('确定要退出吗',100);
-          now = new Date().getTime();
-          return true;
-        }
-      }
-      else if(Actions.currentScene == 'login')
+     
+      if(Actions.currentScene == 'login')
       {
+       
+        Actions.reset('login')
         if(new Date().getTime()-now<2000){
           BackHandler.exitApp();
         }else{
@@ -80,8 +70,7 @@ const App = () => {
         }
       }
       else{
-        if(Actions.pop=='login')
-        {
+        if(Actions.currentScene == 'shoye'){
           if(new Date().getTime()-now<2000){
             BackHandler.exitApp();
           }else{
@@ -91,9 +80,7 @@ const App = () => {
           }
         }
        Actions.pop();
-       return true;
-   
-        
+       return true;    
       }
     }}
     >
@@ -143,8 +130,7 @@ const App = () => {
                       backButtonImage={require('./src/image/arrow.png')}
                       navigationBarStyle={{ backgroundColor: 'red' }}
                     ></Scene>
-                    <Scene key='paizhao' component={paizhao}></Scene>
-
+                  
                   </Scene>
                 </Tabs>
               </Scene>

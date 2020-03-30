@@ -24,8 +24,11 @@ const data2 = [
 ]
 //拍照
 const options = {
-    title: 'Select Avatar',
-    customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+    title: '请选择',
+    cancelButtonTitle:'取消',
+    takePhotoButtonTitle:'拍照',
+    chooseFromLibraryButtonTitle:'选择相册',
+    customButtons: [],
     storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -87,9 +90,8 @@ export default class Myself extends Component {
     }
 
     //点击退出登录时跳转到登录页面
-    restart=()=>{
-        AsyncStorage.removeItem('isInstall');
-        AsyncStorage.removeItem('user');
+    restart=async()=>{
+       await AsyncStorage.removeItem('user');
         Actions.login()
     }
     render() {

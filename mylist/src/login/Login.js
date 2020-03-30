@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { View, Text, Image, TextInput, AsyncStorage, ToastAndroid, TouchableOpacity, Dimensions, StyleSheet, ImageBackground } from 'react-native'
+import { View, Text, Image, TextInput, AsyncStorage, ToastAndroid, TouchableOpacity, Dimensions, StyleSheet, ImageBackground, Alert } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { Icon } from '@ant-design/react-native'
 import { myFetch } from '../utils/util';
+import Item from '@ant-design/react-native/lib/list/ListItem';
 
 export default class login extends Component {
     constructor() {
@@ -11,9 +12,12 @@ export default class login extends Component {
             username: '',
             pwd: '',
             isLoading: false,
-            timer: 3
+            timer: 3,
+            arr: [],
+            brr: [],
         }
     }
+
 
     //输入用户名进行记录
     userhandle = (text) => { this.setState({ username: text }) }
@@ -21,19 +25,33 @@ export default class login extends Component {
     //输入密码进行记录
     pwdhandle = (text) => { this.setState({ pwd: text }) }
 
-    //点击登录后进行设置
+    //获取已经注册过的用户名和密码
+    componentDidMount() {
+        //   AsyncStorage.removeItem('reg')
+        //  AsyncStorage.removeItem('reg1')
+        AsyncStorage.getItem('reg', (err, result) => {
+            this.setState({ arr: JSON.parse(result) })
+        })
+        AsyncStorage.getItem('reg1', (err, result) => {
+            this.setState({ brr: JSON.parse(result) })
+        })
+    }
     login = () => {
-        //点击登录后进行延时显示提示区域
-        this.setState({ isLoading: true })
-        const timer = setInterval(() => {
-            const a = this.state.timer - 1;
-            //延时到达时间进行页面跳转
-            if (a === 0) {
-                clearInterval(timer)
-                myFetch.get('/register').then(res => {
-                    AsyncStorage.setItem('user', JSON.stringify(res.data))
-                })
-                    .then(() => {
+        console.log(this.state.arr)
+        console.log(this.state.brr)
+        if (this.state.username == '' || this.state.pwd == '') {
+            Alert.alert('用户名或密码不能为空！')
+        }
+        else {
+            if (this.state.username == this.state.arr && this.state.pwd == this.state.brr) {
+                //点击登录后进行延时显示提示区域
+                this.setState({ isLoading: true })
+                const timer = setInterval(() => {
+                    const a = this.state.timer - 1;
+                    //延时到达时间进行页面跳转
+                    if (a === 0) {
+                        clearInterval(timer)
+                        AsyncStorage.setItem('user', JSON.stringify(this.state.arr))
                         Actions.home();
                         this.setState({ isLoading: false })
                         ToastAndroid.showWithGravity(
@@ -43,13 +61,23 @@ export default class login extends Component {
                         );
                         //每次进行注册初始设置时间都是3s
                         this.setState({ timer: 3 })
-                    })
+                    }
+
+                    else {
+                        this.setState({ timer: a })
+                    }
+                }, 1000);
+            }
+
+            else if (this.state.username == this.state.arr && this.state.pwd != this.state.brr) {
+                Alert.alert('您输入的密码不正确，请重新输入！')
             }
             else {
-                this.setState({ timer: a })
+                Alert.alert('该用户未被注册，请注册！')
             }
-        }, 1000);
+        }
     }
+
     render() {
         return (
             <ImageBackground source={require('../image/bg1.jpg')} style={{ flex: 1 }}>

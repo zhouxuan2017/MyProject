@@ -11,7 +11,7 @@ let myFetch={
       .then(res=>res.json())
     },
     post(url,body){
-        console.log(JSON.stringify(body))
+       
        return fetch(rootUrl+url, {
             method: 'POST', headers: {
                 "Accept": 'application/json',
