@@ -13,7 +13,7 @@
     "@ant-design/icons-react-native": "1.0.2",
     "@ant-design/react-native": "^3.2.2",
     "react": "16.9.0",
-    "react-native": "0.61.5",
+    "react-native": "0.62.3",
     "react-native-image-picker": "^2.3.1",
     "react-native-message-bar": "^2.0.10",
     "react-native-pure-navigation-bar": "^1.4.9",
